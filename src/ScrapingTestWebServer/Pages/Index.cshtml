@@ -1,0 +1,38 @@
+﻿@page
+@using ScrapingTestCommon
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    var items = new List<TitleInfo>(ViewData["items"] as IEnumerable<TitleInfo> ?? new TitleInfo[0]);
+    var mode = ViewData["mode"] ?? "media";
+    var page = (int)(ViewData["page"] ?? 0);
+    var nextPage = page + 1;
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<ul class="modebuttonbase">
+    <li class="modebutton"><a href="/?mode=media"><span>メディア化</span></a></li>
+    <li class="modebutton"><a href="/?mode=boy"><span>少年・青年マンガ</span></a></li>
+    <li class="modebutton"><a href="/?mode=girl"><span>少女・女性マンガ</span></a></li>
+</ul>
+<div class="clearmodebutton"></div>
+
+<div class="pagelistbase"><a href="/?mode=@mode&page=@nextPage">→ 次のページ</a></div>
+
+<div class="bookitemlist">@foreach(var i in items)
+    {
+    <div class="bookitem">
+        <div class="thumbnailbase"><a href="@i.URL"><img class="thumbnail" src="@i.Thumbnail"/></a></div>
+        <div class="title"><a href="@i.URL">@i.Title</a></div>
+        <div class="author">@i.Author</div>
+        <div class="description">@i.Description</div>
+        <div class="clearbookitem"></div>
+    </div>
+    }
+</div>
+
+<div class="pagelistbase"><a href="/?mode=@mode&page=@nextPage">→ 次のページ</a></div>

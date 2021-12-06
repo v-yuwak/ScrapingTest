@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ScrapingTestConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "-p 3"
+    }
+  }
+}

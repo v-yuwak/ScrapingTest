@@ -1,0 +1,61 @@
+﻿@page "/"
+@using Reactive.Bindings
+@using ScrapingTestCommon
+@using ScrapingTestPwa.ViewModels
+@using System.Reactive.Linq
+@inject MainViewModel ViewModel
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+<ul class="modebuttonbase">
+    <li class="modebutton"><a href="/?mode=media"><span>メディア化</span></a></li>
+    <li class="modebutton"><a href="/?mode=boy"><span>少年・青年マンガ</span></a></li>
+    <li class="modebutton"><a href="/?mode=girl"><span>少女・女性マンガ</span></a></li>
+</ul>
+<div class="clearmodebutton"></div>
+
+<div class="pagelistbase"><a href="/?mode=@ViewModel.Mode&page=@NextPage">→ 次のページ</a></div>
+
+<div class="bookitemlist">@foreach(var i in ViewModel.Titles)
+    {
+    <div class="bookitem">
+        <div class="thumbnailbase"><a href="@i.URL"><img class="thumbnail" src="@i.Thumbnail"/></a></div>
+        <div class="title"><a href="@i.URL">@i.Title</a></div>
+        <div class="author">@i.Author</div>
+        <div class="description">@i.Description</div>
+        <div class="clearbookitem"></div>
+    </div>
+    }
+</div>
+
+<div class="pagelistbase"><a href="/?mode=@ViewModel.Mode&page=@NextPage">→ 次のページ</a></div>
+
+@code {
+    [Parameter]
+    public int Page{ get; set; }
+    [Parameter]
+    public FreeBookSearchMode Mode{ get; set; }
+
+    public async Task OnInitializeAsync()
+    {
+        /*
+        ViewModel.Titles.CollectionChanged += (s, a) =>
+        {
+            this.InvokeAsync(() => this.StateHasChanged());
+        };
+         */
+
+        await ViewModel.UpdateData(Page, Mode);
+    }
+
+    public int NextPage
+    {
+        get => ViewModel.Page + 1;
+    }
+}

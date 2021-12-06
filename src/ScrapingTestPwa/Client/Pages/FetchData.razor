@@ -1,0 +1,37 @@
+﻿@page "/fetchdata"
+@using ScrapingTestCommon
+@inject HttpClient Http
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (titles == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+<div class="bookitemlist">@foreach(var i in titles)
+    {
+    <div class="bookitem">
+        <div class="thumbnailbase"><a href="@i.URL"><img class="thumbnail" src="@i.Thumbnail"/></a></div>
+        <div class="title"><a href="@i.URL">@i.Title</a></div>
+        <div class="author">@i.Author</div>
+        <div class="description">@i.Description</div>
+        <div class="clearbookitem"></div>
+    </div>
+    }
+</div>
+}
+
+@code {
+    private TitleInfo[]? titles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        titles = await Http.GetFromJsonAsync<TitleInfo[]>("FreeBook");
+    }
+}

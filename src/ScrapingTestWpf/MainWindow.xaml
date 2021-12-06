@@ -1,0 +1,101 @@
+﻿<Window x:Class="ScrapingTestWpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ScrapingTestWpf"
+        mc:Ignorable="d"
+        Title="Free Books" Height="450" Width="800">
+
+    <Window.Resources>
+        <Style TargetType="ListViewItem">
+            <EventSetter Event="MouseDoubleClick" Handler="ItemDoubleClick"/>
+        </Style>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <local:MainWindowViewModel/>
+    </Window.DataContext>
+    
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <ComboBox
+                Grid.Column="0"
+                IsEnabled="{Binding IsIdle.Value}"
+                SelectedItem="{Binding SelectedMode.Value, Mode=TwoWay}"
+                >
+                <ComboBox.Items>
+                    <ComboBoxItem Content="メディア化" IsSelected="True" Tag="Media"/>
+                    <ComboBoxItem Content="少年・青年マンガ" Tag="Boy"/>
+                    <ComboBoxItem Content="少女・女性マンガ" Tag="Girl"/>
+                </ComboBox.Items>
+            </ComboBox>
+
+            <Button
+                Grid.Column="1"
+                Content="→ 次のページ"
+                Margin="10,0,0,0"
+                Padding="5,0"
+                Command="{Binding NextPageCommand}"
+                />
+        </Grid>
+
+        <ListView
+            Grid.Row="1"
+            Margin="0,10,0,0"
+            ItemsSource="{Binding Titles}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Image
+                            Grid.Column="0"
+                            Width="100"
+                            Height="100"
+                            Source="{Binding Thumbnail}"/>
+
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock
+                                Grid.Row="0"
+                                Text="{Binding Title}"
+                                FontWeight="Bold"
+                                FontSize="16"
+                                />
+                            <TextBlock
+                                Grid.Row="1"
+                                Text="{Binding Author}"
+                                />
+                            <TextBlock
+                                Grid.Row="2"
+                                Text="{Binding Description}"
+                                Foreground="Red"
+                                />
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+            
+
+    </Grid>
+</Window>

@@ -1,0 +1,93 @@
+﻿@page "/"
+@using Reactive.Bindings
+@using ScrapingTestCommon
+@inject HttpClient Http
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+<ul class="modebuttonbase">
+    <li class="modebutton"><span @onclick="ClickMedia">メディア化</span></li>
+    <li class="modebutton"><span @onclick="ClickBoy">少年・青年マンガ</span></li>
+    <li class="modebutton"><span @onclick="ClickGirl">少女・女性マンガ</span></li>
+</ul>
+<div class="clearmodebutton"></div>
+
+<div class="pagelistbase"><span @onclick="ClickNextPage">→ 次のページ</span></div>
+
+@if (titles == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+<div class="bookitemlist">@foreach(var i in titles)
+    {
+    <div class="bookitem">
+        <div class="thumbnailbase"><a href="@i.URL"><img class="thumbnail" src="@i.Thumbnail"/></a></div>
+        <div class="title"><a href="@i.URL">@i.Title</a></div>
+        <div class="author">@i.Author</div>
+        <div class="description">@i.Description</div>
+        <div class="clearbookitem"></div>
+    </div>
+    }
+</div>
+}
+
+<div class="pagelistbase"><span @onclick="ClickNextPage">→ 次のページ</span></div>
+
+@code {
+
+    private TitleInfo[]? titles;
+
+    [Parameter]
+    public int Page { get => PageValue.Value; set => PageValue.Value = value; }
+    public int NextPage => Page + 1;
+    [Parameter]
+    public FreeBookSearchMode Mode { get => ModeValue.Value; set => ModeValue.Value = value; }
+
+    public ReactiveProperty<int> PageValue { get; set; } = new ReactiveProperty<int>(1);
+    public ReactiveProperty<FreeBookSearchMode> ModeValue { get; set; } = new ReactiveProperty<FreeBookSearchMode>(FreeBookSearchMode.Media);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateList();
+    }
+
+    async Task UpdateList()
+    {
+        titles = await Http.GetFromJsonAsync<TitleInfo[]>($"FreeBook?mode={Mode}&page={Page}");
+    }
+
+    async Task ClickMedia()
+    {
+        ModeValue.Value = FreeBookSearchMode.Media;
+        PageValue.Value = 1;
+        await UpdateList();
+    }
+
+    async Task ClickBoy()
+    {
+        ModeValue.Value = FreeBookSearchMode.Boy;
+        PageValue.Value = 1;
+        await UpdateList();
+    }
+
+    async Task ClickGirl()
+    {
+        ModeValue.Value = FreeBookSearchMode.Girl;
+        PageValue.Value = 1;
+        await UpdateList();
+    }
+
+    async Task ClickNextPage()
+    {
+        PageValue.Value++;
+        await UpdateList();
+    }
+}
